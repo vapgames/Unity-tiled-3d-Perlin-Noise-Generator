@@ -162,6 +162,7 @@ public class Noise3DTextureGenerator : EditorWindow
 			if(texture.width != width || texture.height != height || texture.depth != depth) {
 				texture = new Texture3D(width, height, depth, TextureFormat.RGBA32, false);
 				texture.wrapMode = TextureWrapMode.Repeat;
+				AssetDatabase.CreateAsset(texture, path);
 			}
 			texture.SetPixels(tiledColors);
 			texture.Apply();
