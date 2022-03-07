@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +12,7 @@ public class Noise3DTextureGenerator : EditorWindow
 	static public int width = 64;
 	static public int height = 64;
 	static public int depth = 64;
+	static public TextureFormat format = TextureFormat.RGBA32;
 	static public int octave = 1;
 	static public Vector3 scale = new Vector3(1, 1, 1);
 	static public float scaleMult = 0.05f;
@@ -30,6 +31,7 @@ public class Noise3DTextureGenerator : EditorWindow
 		width = EditorPrefs.GetInt("TextureGenerator_width", 64);
 		height = EditorPrefs.GetInt("TextureGenerator_height", 64);
 		depth = EditorPrefs.GetInt("TextureGenerator_depth", 64);
+		format = (TextureFormat)EditorPrefs.GetInt("TextureGenerator_format", (int)TextureFormat.RGBA32);
 		octave = EditorPrefs.GetInt("TextureGenerator_octave", 4);
 		scale.x = EditorPrefs.GetFloat("TextureGenerator_scale.x", 1);
 		scale.y = EditorPrefs.GetFloat("TextureGenerator_scale.y", 1);
@@ -49,6 +51,7 @@ public class Noise3DTextureGenerator : EditorWindow
 		width = EditorGUILayout.IntField("width", width, GUILayout.ExpandWidth(false));
 		height = EditorGUILayout.IntField("height", height, GUILayout.ExpandWidth(false));
 		depth = EditorGUILayout.IntField("depth", depth, GUILayout.ExpandWidth(false));
+		format = (TextureFormat)EditorGUILayout.EnumPopup("format", format);
 		octave = EditorGUILayout.IntField("octave", octave, GUILayout.ExpandWidth(false));
 		tiling = EditorGUILayout.Vector3Field("tiling", tiling);
 		tiling.Set(Mathf.Clamp01(tiling.x), Mathf.Clamp01(tiling.y), Mathf.Clamp01(tiling.z));
@@ -62,6 +65,7 @@ public class Noise3DTextureGenerator : EditorWindow
 			EditorPrefs.SetInt("TextureGenerator_width", width);
 			EditorPrefs.SetInt("TextureGenerator_height", height);
 			EditorPrefs.SetInt("TextureGenerator_depth", depth);
+			EditorPrefs.SetInt("TextureGenerator_format", (int)format);
 			EditorPrefs.SetInt("TextureGenerator_octave", octave);
 			EditorPrefs.SetFloat("TextureGenerator_scale.x", scale.x);
 			EditorPrefs.SetFloat("TextureGenerator_scale.y", scale.y);
@@ -171,7 +175,7 @@ public class Noise3DTextureGenerator : EditorWindow
 		}
 		else {
 			//CREATE NEW
-			texture = new Texture3D(width, height, depth, TextureFormat.RGBA32, false);
+			texture = new Texture3D(width, height, depth, format, false);
 			texture.wrapMode = TextureWrapMode.Repeat;
 			texture.SetPixels(tiledColors);
 			texture.Apply();
